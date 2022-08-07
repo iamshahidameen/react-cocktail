@@ -5,14 +5,13 @@ import { useParams, Link } from 'react-router-dom';
 const url = 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=';
 
 const SingleCocktail = () => {
-  console.log(useParams().id);
-  const [drinkID, setDrinkID] = useState(useParams().id);
+  const { id } = useParams();
   const [singleDrink, setSingleDrink] = useState('');
 
   const drinkInfo = async () => {
-    const resp = await fetch(`${url}${drinkID}`);
+    const resp = await fetch(`${url}${id}`);
     const data = await resp.json();
-    console.log(data, 'drink id');
+    console.log(id, 'drink id');
 
     const { drinks } = data;
 
