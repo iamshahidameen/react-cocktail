@@ -6,54 +6,67 @@ const url = 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=';
 
 const SingleCocktail = () => {
   const { id } = useParams();
-  const [singleDrink, setSingleDrink] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [cocktail, setCocktail] = useState('');
 
   const drinkInfo = async () => {
-    const resp = await fetch(`${url}${id}`);
-    const data = await resp.json();
-    console.log(id, 'drink id');
+    setLoading(true);
+    try {
+      const resp = await fetch(`${url}${id}`);
+      const data = await resp.json();
 
-    const { drinks } = data;
+      const { drinks } = data;
 
-    setSingleDrink(drinks[0]);
+      setCocktail(drinks[0]);
+      setLoading(false);
+    } catch (error) {
+      console.log(error.resp);
+      setLoading(false);
+    }
   };
   useEffect(() => {
     drinkInfo();
-  }, []);
-  console.log(singleDrink, 'set single drink');
+  }, [id]);
+
+  if (loading) {
+    return <Loading />;
+  }
+  if (!cocktail) {
+    return <h2 className="section-title">No Cocktails Data</h2>;
+  }
   return (
     <section className="section cocktail-section">
       <Link to="/" className="btn btn-primary">
         back home
       </Link>
-      <h2 className="section-title">{singleDrink.strDrink}</h2>
+      <h2 className="section-title">{cocktail.strDrink}</h2>
       <div className="drink">
-        <img src={singleDrink.strDrinkThumb} alt={singleDrink.strDrink} />
+        <img src={cocktail.strDrinkThumb} alt={cocktail.strDrink} />
         <div className="drink-info">
           <p>
-            <span className="drink-data">name :</span> {singleDrink.strDrink}
+            <span className="drink-data">name :</span> {cocktail.strDrink}
           </p>
           <p>
             <span className="drink-data">category :</span>
-            {singleDrink.strCategory}
+            {cocktail.strCategory}
           </p>
           <p>
             <span className="drink-data">info :</span>
-            {singleDrink.strAlcoholic}
+            {cocktail.strAlcoholic}
           </p>
           <p>
-            <span className="drink-data">glass :</span> {singleDrink.strGlass}
+            <span className="drink-data">glass :</span> {cocktail.strGlass}
           </p>
           <p>
             <span className="drink-data">instructons :</span>{' '}
-            {singleDrink.strInstructions}
+            {cocktail.strInstructions}
           </p>
           <p>
             <span className="drink-data">ingredients :</span>
-            <span> {singleDrink.strIngredient1}</span>
-            <span> {singleDrink.strIngredient2}</span>
-            <span> {singleDrink.strIngredient3}</span>
-            <span> {singleDrink.strIngredient4}</span>
+            <span> {cocktail.strIngredient1}</span>
+            <span> {cocktail.strIngredient2}</span>
+            <span> {cocktail.strIngredient3}</span>
+            <span> {cocktail.strIngredient4}</span>
           </p>
         </div>
       </div>
